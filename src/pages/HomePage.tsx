@@ -1,15 +1,6 @@
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import { useEffect, useState } from "react";
+import { socketService } from "../services/socket.service";
 
-// Ensure the socket URL is set correctly
-const isProd = import.meta.env.PROD;
-const SERVER_URL = isProd ? window.location.origin : import.meta.env.VITE_SOCKET_URL;
-
-console.log('🔌 Connecting to socket server at:', SERVER_URL);
-
-const socket = io(SERVER_URL);
-
-// Define the Stock type for TypeScript
 type Stock = {
   symbol: string;
   price: number;
@@ -20,11 +11,11 @@ export const HomePage = () => {
   const [stocks, setStocks] = useState<Stock[]>([]);
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected:', socket.id);
+    socketService.on("connect", () => {
+      console.log("✅ Connected to socket server");
     });
 
-    socket.on('stock-update', (data: Stock) => {
+    socketService.on("stock-update", (data: Stock) => {
       setStocks((prev) => {
         const updated = [...prev];
         const idx = updated.findIndex((s) => s.symbol === data.symbol);
@@ -38,7 +29,9 @@ export const HomePage = () => {
     });
 
     return () => {
-      socket.disconnect();
+      socketService.off("connect");
+      socketService.off("stock-update");
+      socketService.disconnect();
     };
   }, []);
 
@@ -58,8 +51,8 @@ export const HomePage = () => {
             <tr key={symbol}>
               <td>{symbol}</td>
               <td>${price.toFixed(2)}</td>
-              <td className={change >= 0 ? 'positive' : 'negative'}>
-                {change >= 0 ? '▲' : '▼'} {Math.abs(change).toFixed(2)}
+              <td className={change >= 0 ? "positive" : "negative"}>
+                {change >= 0 ? "▲" : "▼"} {Math.abs(change).toFixed(2)}
               </td>
             </tr>
           ))}
@@ -67,4 +60,4 @@ export const HomePage = () => {
       </table>
     </main>
   );
-}
+};

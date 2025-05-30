@@ -1,0 +1,16 @@
+.connection-status {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    transition: background-color 0.3s ease;
+    color: #fff;
+
+    &.connected {
+        background-color: $up;
+    }
+
+    &.disconnected {
+        background-color: $down;
+    }
+}

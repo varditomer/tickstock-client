@@ -4,12 +4,23 @@ header {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   border-bottom: 1px solid $border-color;
 
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   h1 {
     font-size: 1.8rem;
     font-weight: 600;
     color: $accent;
     display: flex;
+    align-items: center;
     gap: 10px;
 
+    img {
+      height: 1.6rem;
+      vertical-align: middle;
+    }
   }
 }
