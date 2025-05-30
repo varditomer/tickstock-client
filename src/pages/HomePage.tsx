@@ -1,4 +1,3 @@
-// HomePage.tsx
 import { useEffect, useState } from "react";
 import { StockChart } from "../components/StockChart";
 import { StockTable } from "../components/StockTable";
@@ -7,26 +6,14 @@ import { socketService } from "../services/socket.service";
 
 export const HomePage = () => {
   const [stocks, setStocks] = useState<Stock[]>([]);
-  const [aaplHistory, setAaplHistory] = useState<
-    { time: string; price: number }[]
-  >([]);
 
   useEffect(() => {
+    // This is critical to trigger the reconnection status
     socketService.on("connect", () => {
       console.log("✅ Connected to socket server");
     });
 
     socketService.on<Stock>("stock-update", (data) => {
-      // Update AAPL chart
-      if (data.symbol === "AAPL") {
-        const time = new Date().toLocaleTimeString();
-        setAaplHistory((prev) => {
-          const next = [...prev, { time, price: data.price }];
-          return next.length > 10 ? next.slice(-10) : next;
-        });
-      }
-
-      // Update stock table
       setStocks((prev) => {
         const updated = [...prev];
         const idx = updated.findIndex((s) => s.symbol === data.symbol);
@@ -35,7 +22,7 @@ export const HomePage = () => {
         } else {
           updated.push(data);
         }
-        return [...updated];
+        return updated;
       });
     });
 
@@ -50,7 +37,7 @@ export const HomePage = () => {
     <main className="home-page">
       <h2>Live Stock Updates</h2>
       <StockTable stocks={stocks} />
-      <StockChart data={aaplHistory} />
+      <StockChart stocks={stocks} />
     </main>
   );
 };

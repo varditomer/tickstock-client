@@ -1,25 +1,59 @@
 // components/StockChart.tsx
+import { useState, useEffect } from "react";
 import {
-  LineChart,
+  CartesianGrid,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from "recharts";
+import type { Stock } from "../models/stock.model";
 
 interface Props {
-  data: { time: string; price: number }[];
+  stocks: Stock[];
 }
 
-export const StockChart = ({ data }: Props) => {
+export const StockChart = ({ stocks }: Props) => {
+  const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
+  const [chartData, setChartData] = useState<{ time: string; price: number }[]>(
+    []
+  );
+
+  useEffect(() => {
+    const symbolHistory = stocks
+      .filter((s) => s.symbol === selectedSymbol)
+      .map((s) => ({
+        time: new Date().toLocaleTimeString().slice(0, 8),
+        price: s.price,
+      }))
+      .slice(-10);
+
+    setChartData(symbolHistory);
+  }, [stocks, selectedSymbol]);
+
+  const uniqueSymbols = Array.from(new Set(stocks.map((s) => s.symbol)));
+
   return (
     <section className="stock-chart-section">
-      <h3>AAPL Price (Recent)</h3>
+      <div className="chart-header">
+        <h3>{selectedSymbol} Price (Recent)</h3>
+        <select
+          className="stock-selector"
+          value={selectedSymbol}
+          onChange={(e) => setSelectedSymbol(e.target.value)}
+        >
+          {uniqueSymbols.map((symbol) => (
+            <option key={symbol} value={symbol}>
+              {symbol}
+            </option>
+          ))}
+        </select>
+      </div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart
-          data={data}
+          data={chartData}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
