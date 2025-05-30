@@ -8,9 +8,12 @@
 @import './basics/base';
 
 // Components
+// Layout
 @import './components/layout/header';
 @import './components/layout/connection-status';
 @import './components/layout/footer';
+// General
+@import './components/stockChart';
 @import './components/stockTable';
 
 // Pages

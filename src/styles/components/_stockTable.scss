@@ -1,41 +1,41 @@
-.stock-table {
+.stock-table-section {
   width: 100%;
   max-width: 800px;
-  margin-top: 2rem;
-  border-collapse: collapse;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: $card-dark;
   border-radius: 12px;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  background: $glass;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
 
-  th, td {
-    padding: 1rem 1.5rem;
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
     text-align: left;
+    padding: 0.75rem 1rem;
     font-size: 1rem;
-    border-bottom: 1px solid $border-color;
   }
 
   th {
-    background-color: rgba(255, 255, 255, 0.05);
+    background: $card-darker;
     color: $text-light;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.05rem;
   }
 
-  tr:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    transition: background-color 0.3s ease;
+  td {
+    color: $text-main;
+    border-top: 1px solid $border-color;
   }
 
   .positive {
-    color: $up;
+    color: $green;
     font-weight: 600;
   }
 
   .negative {
-    color: $down;
+    color: $red;
     font-weight: 600;
   }
 }

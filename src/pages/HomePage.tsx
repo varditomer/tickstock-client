@@ -1,21 +1,32 @@
+// HomePage.tsx
 import { useEffect, useState } from "react";
+import { StockChart } from "../components/StockChart";
+import { StockTable } from "../components/StockTable";
+import type { Stock } from "../models/stock.model";
 import { socketService } from "../services/socket.service";
-
-type Stock = {
-  symbol: string;
-  price: number;
-  change: number;
-};
 
 export const HomePage = () => {
   const [stocks, setStocks] = useState<Stock[]>([]);
+  const [aaplHistory, setAaplHistory] = useState<
+    { time: string; price: number }[]
+  >([]);
 
   useEffect(() => {
     socketService.on("connect", () => {
       console.log("✅ Connected to socket server");
     });
 
-    socketService.on("stock-update", (data: Stock) => {
+    socketService.on<Stock>("stock-update", (data) => {
+      // Update AAPL chart
+      if (data.symbol === "AAPL") {
+        const time = new Date().toLocaleTimeString();
+        setAaplHistory((prev) => {
+          const next = [...prev, { time, price: data.price }];
+          return next.length > 10 ? next.slice(-10) : next;
+        });
+      }
+
+      // Update stock table
       setStocks((prev) => {
         const updated = [...prev];
         const idx = updated.findIndex((s) => s.symbol === data.symbol);
@@ -36,28 +47,10 @@ export const HomePage = () => {
   }, []);
 
   return (
-    <main>
+    <main className="home-page">
       <h2>Live Stock Updates</h2>
-      <table className="stock-table">
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Change</th>
-          </tr>
-        </thead>
-        <tbody>
-          {stocks.map(({ symbol, price, change }) => (
-            <tr key={symbol}>
-              <td>{symbol}</td>
-              <td>${price.toFixed(2)}</td>
-              <td className={change >= 0 ? "positive" : "negative"}>
-                {change >= 0 ? "▲" : "▼"} {Math.abs(change).toFixed(2)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <StockTable stocks={stocks} />
+      <StockChart data={aaplHistory} />
     </main>
   );
 };
