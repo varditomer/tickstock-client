@@ -9,22 +9,27 @@ console.log("🔌 Connecting to socket server at:", baseUrl);
 
 let socket: Socket;
 
+type SocketEventCallback<T = unknown> = (data: T) => void;
+
 export const socketService = {
   setup() {
-    socket = io(baseUrl);
+    socket = io(baseUrl, {
+      autoConnect: true,
+      reconnection: true,
+    });
   },
 
-  on<T = any>(eventName: string, cb: (data: T) => void) {
+  on<T>(eventName: string, cb: SocketEventCallback<T>) {
     socket.on(eventName, cb);
   },
 
-  off(eventName: string, cb?: Function) {
+  off<T>(eventName: string, cb?: SocketEventCallback<T>) {
     if (!socket) return;
     if (!cb) socket.removeAllListeners(eventName);
-    else socket.off(eventName, cb as (...args: any[]) => void);
+    else socket.off(eventName, cb);
   },
 
-  emit<T = any>(eventName: string, data?: T) {
+  emit<T>(eventName: string, data?: T) {
     socket.emit(eventName, data);
   },
 
@@ -37,5 +42,4 @@ export const socketService = {
   },
 };
 
-// Setup immediately on import
 socketService.setup();

@@ -1,34 +1,32 @@
 .connection-status {
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.35rem 1rem;
-  border-radius: 999px;
-  backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: $text-light;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 0 10px rgba(0, 255, 204, 0.1);
-  transition: all 0.3s ease;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: $text-light;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.1);
+    transition: all 0.3s ease;
 
-  &::before {
-    content: '';
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: currentColor;
-  }
+    &.connected {
+        color: $up;
+        box-shadow: 0 0 8px rgba($up, 0.4);
+    }
 
-  &.connected {
-    color: $up;
-    box-shadow: 0 0 8px rgba($up, 0.4);
-  }
+    &.disconnected {
+        color: $down;
+        box-shadow: 0 0 8px rgba($down, 0.3);
+    }
 
-  &.disconnected {
-    color: $down;
-    box-shadow: 0 0 8px rgba($down, 0.3);
-  }
+    &.reconnecting {
+        color: $accent;
+        background: rgba(0, 188, 212, 0.2);
+        border: 1px solid rgba(0, 188, 212, 0.4);
+        box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
+    }
 }
