@@ -4,16 +4,46 @@ import { StockTable } from "../components/StockTable";
 import type { Stock } from "../models/stock.model";
 import { socketService } from "../services/socket.service";
 
+type HistoryMap = Record<string, { time: string; price: number }[]>;
+
 export const HomePage = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [stocks, setStocks] = useState<Stock[]>([]);
-  const [historyMap, setHistoryMap] = useState<
-    Record<string, { time: string; price: number }[]>
-  >({});
+  const [historyMap, setHistoryMap] = useState<HistoryMap>({});
 
   useEffect(() => {
     const socket = socketService.getSocket();
-    setIsConnected(socket.connected); // 👈 immediately reflect current state
+    setIsConnected(socket.connected);
+
+    // When connecting, receive full initial history
+    const handleInitialData = (
+      data: Record<string, { price: number; change: number }[]>
+    ) => {
+      const now = new Date().toLocaleTimeString();
+
+      const stockList: Stock[] = [];
+      const histMap: HistoryMap = {};
+
+      for (const symbol in data) {
+        const history = data[symbol];
+        if (Array.isArray(history) && history.length > 0) {
+          const latest = history[history.length - 1];
+          stockList.push({
+            symbol,
+            price: latest.price,
+            change: latest.change,
+          });
+
+          histMap[symbol] = history.map((h) => ({
+            time: now,
+            price: h.price,
+          }));
+        }
+      }
+
+      setStocks(stockList);
+      setHistoryMap(histMap);
+    };
 
     const handleStockUpdate = (data: Stock) => {
       setStocks((prev) => {
@@ -47,18 +77,17 @@ export const HomePage = () => {
       setIsConnected(true);
     });
 
+    socket.once("initial-data", handleInitialData);
     socket.on("stock-update", handleStockUpdate);
 
     return () => {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("reconnect");
+      socket.off("initial-data", handleInitialData);
       socket.off("stock-update", handleStockUpdate);
     };
   }, []);
-
-  console.log("Stocks:", stocks);
-  console.log("Connection status:", isConnected);
 
   return (
     <main className="home-page">
