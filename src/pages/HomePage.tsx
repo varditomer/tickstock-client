@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:4000');
+// Ensure the socket URL is set correctly
+const SERVER_URL = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+console.log('🔌 Connecting to socket server at:', SERVER_URL);
 
+const socket = io(SERVER_URL);
+
+// Define the Stock type for TypeScript
 type Stock = {
   symbol: string;
   price: number;
   change: number;
 };
-
 
 export const HomePage = () => {
   const [stocks, setStocks] = useState<Stock[]>([]);
