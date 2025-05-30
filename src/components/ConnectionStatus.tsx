@@ -25,7 +25,7 @@ export const ConnectionStatus = () => {
         isConnected ? "connected" : "disconnected"
       }`}
     >
-      {isConnected ? "🟢 Connected" : "🔴 Disconnected"}
+      {isConnected ? "Connected" : "Disconnected"}
     </div>
   );
 };
