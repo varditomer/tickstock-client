@@ -1,37 +1,24 @@
-// components/StockChart.tsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+    CartesianGrid,
+    Line,
+    LineChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
 } from "recharts";
 import type { Stock } from "../models/stock.model";
 
 interface Props {
   stocks: Stock[];
+  historyMap: Record<string, { time: string; price: number }[]>;
 }
 
-export const StockChart = ({ stocks }: Props) => {
+export const StockChart = ({ stocks, historyMap }: Props) => {
   const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
-  const [chartData, setChartData] = useState<{ time: string; price: number }[]>(
-    []
-  );
 
-  useEffect(() => {
-    const symbolHistory = stocks
-      .filter((s) => s.symbol === selectedSymbol)
-      .map((s) => ({
-        time: new Date().toLocaleTimeString().slice(0, 8),
-        price: s.price,
-      }))
-      .slice(-10);
-
-    setChartData(symbolHistory);
-  }, [stocks, selectedSymbol]);
+  const chartData = historyMap[selectedSymbol] || [];
 
   const uniqueSymbols = Array.from(new Set(stocks.map((s) => s.symbol)));
 
