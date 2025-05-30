@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 // Ensure the socket URL is set correctly
-const SERVER_URL = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+const isProd = import.meta.env.PROD;
+const SERVER_URL = isProd ? window.location.origin : import.meta.env.VITE_SOCKET_URL;
+
 console.log('🔌 Connecting to socket server at:', SERVER_URL);
 
 const socket = io(SERVER_URL);
