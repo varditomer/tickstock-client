@@ -1,0 +1,16 @@
+// This file is the main entry point for all styles in the application.
+
+// Setup
+@import './setup/variables';
+@import './setup/mixins';
+
+// Basics
+@import './basics/base';
+
+// Components
+@import './components/layout/header';
+@import './components/layout/footer';
+@import './components/stockTable';
+
+// Pages
+@import './pages/home';

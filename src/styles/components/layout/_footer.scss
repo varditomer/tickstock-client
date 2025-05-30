@@ -1,0 +1,9 @@
+footer {
+  padding: 1rem 2rem;
+  font-size: 0.9rem;
+  background: $card-dark;
+  border-top: 1px solid $border-color;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  color: lighten($text-light, 20%);
+}
